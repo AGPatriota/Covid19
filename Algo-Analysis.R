@@ -1,7 +1,7 @@
 #Reading the data
 
-#Continents
-BD.Cont =read.csv("/home/patriota/Dropbox/Articles/Artigos_Pendentes/COVID19/algo/continent2country.csv", header = TRUE)
+#Continents by https://www.kaggle.com/statchaitya/country-to-continent
+BD.Cont =read.csv("continent2country.csv", header = TRUE)
 
 #Cases
 BD.cases.or =  read.csv(url("https://data.humdata.org/hxlproxy/api/data-preview.csv?url=https%3A%2F%2Fraw.githubusercontent.com%2FCSSEGISandData%2FCOVID-19%2Fmaster%2Fcsse_covid_19_data%2Fcsse_covid_19_time_series%2Ftime_series_covid19_confirmed_global.csv&filename=time_series_covid19_confirmed_global.csv"), header = TRUE)
@@ -87,9 +87,15 @@ for(j in levels(BD.d[,1])){
 
 BD2 <- data.frame()
 for(j in levels(BD.d0[,1])[-1]){
-	aux <- BD.d0[BD.d0[,1] == j,]
-	BD2 <- rbind(BD2, cbind(id=1:dim(aux)[1],aux))
+	aux	<- BD.d0[BD.d0[,1] == j,]
+	aux.d	<- tapply(aux[,3], aux[,4], sum)
+	aux.d	<- data.frame(id = 1:length(aux.d),Cont = rep(j, length(aux.d)),aux.d, as.Date(names(aux.d)))
+	BD2 <- rbind(BD2, aux.d)
 }
+names(BD2)<- c("id",names(BD.d0)[-2])
+
+
+
 
 #Plots for the selected countries with Portugues title, labels and legend
 
