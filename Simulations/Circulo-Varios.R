@@ -3,12 +3,10 @@ require('ggplot2')
 require('plotly')
 require('gganimate')
 require('magick')
-require('cowplot')
-library('tweenr')
-library("ggpubr")
 
 
-#Initializing counter
+
+#Initializing  the counter
 kk=0
 
 #Minimum distance to avoid being infected "dist0" varies in (1.2,1.7,2.2,2.7)
@@ -181,7 +179,7 @@ BD2[,2] = BD2[,2]/Pop*100
 a= ggplot(BD2,aes(x=Gen, y=Cases, color=Type)) +geom_path() + geom_point(alpha=0.7)+ 
 	labs(title = 'Proportion of Cases (%)', x = 'steps', y = '')+
 		scale_color_manual(values=c("Black", "tomato2","palegreen3","royalblue3"),labels =expression(paste("Deaths:         ", frac(dD,dt) == mu * I),paste("Infected:        ",frac(dI,dt) == r* beta*S*frac(I,N)-gamma* I - mu*I),paste("Recovered:   ",frac(dR,dt) == gamma* I),paste("Susceptible: ",frac(dS,dt) == -r* beta*S*frac(I,N))))+ 	
-			theme(legend.text.align = 0) +	transition_reveal(id=Gen, along=Gen) +ease_aes('linear')
+			theme(legend.text.align = 0) +	transition_reveal(along=Gen) +ease_aes('linear')
 
 
 col2 = c(NA,NA,NA,NA)

@@ -1,15 +1,15 @@
 ################################################
 ################################################
-#Simulando dados
+#Simulando dados Testing...
 ################################################
 ################################################
 require('ggplot2')
 require('plotly')
 require('gganimate')
 require('magick')
-require('cowplot')
-library('tweenr')
-library("ggpubr")
+#require('cowplot')
+#library('tweenr')
+#library("ggpubr")
 
 
 dist0 = 1.7
