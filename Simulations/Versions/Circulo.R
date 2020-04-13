@@ -7,9 +7,9 @@ require('ggplot2')
 require('plotly')
 require('gganimate')
 require('magick')
-require('cowplot')
-library('tweenr')
-library("ggpubr")
+#require('cowplot')
+#library('tweenr')
+#library("ggpubr")
 
 Pop  = 5000
 T    = 500
