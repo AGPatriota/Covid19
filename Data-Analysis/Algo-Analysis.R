@@ -143,4 +143,9 @@ image_write(b.gif, paste("Gifs/Evolucao-mortos-Continente.gif", sep=""))
 
 
 
+##
+
+s = barplot(diff(BD1[1:29,3])~BD1[2:29,1], xlab="Dias desde o primeiro morto", main ="Brasil", ylab="Mortos divulgados por dia", ylim=c(0,210))
+text(s,diff(BD1[1:29,3])+4, diff(BD1[1:29,3]))
+
 
