@@ -67,7 +67,7 @@ for(dist0 in c(1.2,1.7,2.2,2.7)){
 	pp         = 10
 
 	#Number of initial infected
-	Infec      =round(0.006*sum(B1[,1]==1))
+	Infec      =round(0.003*sum(B1[,1]==1))
 
 
 	#Probability of dying of an infected after 10 steps

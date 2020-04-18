@@ -142,10 +142,19 @@ b.gif = image_read(b.gif)
 image_write(b.gif, paste("Gifs/Evolucao-mortos-Continente.gif", sep=""))
 
 
+###############################
+## Mortos divulgados por dia
+###############################
+nn = BD1[,2]=="Brasil"
+jpeg('Mortos-dia.jpg', width=820, height=600)
+s = barplot(c(BD1[nn,3][1],diff(BD1[nn,3]))~BD1[nn,1], xlab="Dias desde o primeiro morto", main ="Brasil", ylab="Mortos divulgados por dia", ylim=c(0,range(diff(BD1[nn,3]))[2]+10))
+text(s,diff(BD1[nn,3])+4, diff(BD1[nn,3]))
+dev.off()
 
-##
-
-s = barplot(diff(BD1[1:29,3])~BD1[2:29,1], xlab="Dias desde o primeiro morto", main ="Brasil", ylab="Mortos divulgados por dia", ylim=c(0,210))
-text(s,diff(BD1[1:29,3])+4, diff(BD1[1:29,3]))
+nn0 = (BD1[,2]=="Estados Unidos")
+jpeg('Mortos-dia-US.jpg', width=820, height=600)
+s = barplot(c(BD1[nn0,3][1],diff(BD1[nn0,3]))~BD1[nn0,1], xlab="Dias desde o primeiro morto", main ="Estados Unidos", ylab="Mortos divulgados por dia", ylim=c(0,range(diff(BD1[nn0,3]))[2]+10))
+#text(s,diff(BD1[nn,3])+4, diff(BD1[nn,3]))
+dev.off()
 
 

@@ -30,7 +30,7 @@ SEIR = function(t,state,parameters){
 }     
 
 parameters <- c(Lambda = 0, r = 0.9, beta= 0.12,mu =0.01, eps= 0.5,gamma=0.04, mu0=0.0001)
-state      <- c(S = 0.9, E = 0.1, I = 0.001, R=0.0)
+state      <- c(S = 0.9, E = 0.099, I = 0.001, R=0.0)
 times      <- seq(0, 500, length(1000))
 out <- ode(y = state, times = times, func = SEIR, parms = parameters)
 
