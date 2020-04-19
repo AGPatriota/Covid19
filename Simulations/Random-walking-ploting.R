@@ -2,7 +2,7 @@
 #dist0=1.2
 
 
-BD = read.table("Simulated-Data/Sim-Data.dat")
+BD = read.table(url("https://www.ime.usp.br/~patriota/Covid19-Sim/Sim-Data.dat"))
 
 
 
