@@ -164,12 +164,20 @@ for(dist0 in c(1.2,1.7,2.2,2.7)){
 		BD = rbind(BD,BD1)
 }
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 6f8691321855970c3591ad3f6d6226b9ae64a6f4
 levels(BD$Type)[levels(BD$Type)=="tomato2"]="Infected"
 levels(BD$Type)[levels(BD$Type)=="royalblue3"]="Susceptible"
 levels(BD$Type)[levels(BD$Type)=="black"]="Deaths"
 levels(BD$Type)[levels(BD$Type)=="palegreen3"]="Recovered"
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6f8691321855970c3591ad3f6d6226b9ae64a6f4
 i<- i-1
 BD2 =  t(sapply(1:i, function(j) table(BD[BD$Gen==j,]$Type)))
 BD2 = data.frame(Gen=c(rep(1:i,dim(BD2)[2])),Cases = c(BD2), Type =c(rep(colnames(BD2)[1],i), rep(colnames(BD2)[2], i),rep(colnames(BD2)[3],i), rep(colnames(BD2)[4], i)))
