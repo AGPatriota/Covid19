@@ -148,7 +148,7 @@ image_write(b.gif, paste("Gifs/Evolucao-mortos-Continente.gif", sep=""))
 nn = BD1[,2]=="Brasil"
 jpeg('Figs/Mortos-dia.jpg', width=820, height=600)
 s = barplot(c(BD1[nn,3][1],diff(BD1[nn,3]))~BD1[nn,1], xlab="Dias desde o primeiro morto", main ="Brasil", ylab="Mortos divulgados por dia", ylim=c(0,range(diff(BD1[nn,3]))[2]+10))
-text(s,diff(BD1[nn,3])+4, diff(BD1[nn,3]))
+text(s,c(BD1[nn,3][1],diff(BD1[nn,3]))+4, c(BD1[nn,3][1], diff(BD1[nn,3])))
 dev.off()
 
 nn0 = (BD1[,2]=="Estados Unidos")
