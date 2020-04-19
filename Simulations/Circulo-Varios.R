@@ -164,12 +164,11 @@ for(dist0 in c(1.2,1.7,2.2,2.7)){
 		BD = rbind(BD,BD1)
 }
 
-
-
 levels(BD$Type)[levels(BD$Type)=="tomato2"]="Infected"
 levels(BD$Type)[levels(BD$Type)=="royalblue3"]="Susceptible"
 levels(BD$Type)[levels(BD$Type)=="black"]="Deaths"
 levels(BD$Type)[levels(BD$Type)=="palegreen3"]="Recovered"
+
 
 i<- i-1
 BD2 =  t(sapply(1:i, function(j) table(BD[BD$Gen==j,]$Type)))
