@@ -118,17 +118,21 @@ a.gif = image_read(a.gif)
 a1.gif =  animate(a1, width = 440, height = 340)
 a1.gif = image_read(a1.gif)
 
-
+gc()
+gc()
 #Appending two gifs
 new_gif <- image_append(c(a.gif[1],a1.gif[1]))
 for(k in 2:100){
   combined <- image_append(c(a.gif[k], a1.gif[k]))
   new_gif <- c(new_gif, combined)
 }
+gc()
+gc()
 
 image_write(new_gif , paste("Gifs/Evolucao-mortos.gif", sep=""))
 
-
+gc()
+gc()
 #Plots for the Continents with Portugues title, labels and legend
 b = ggplot(BD2, aes(x =id, y=Mortos, color = Continentes, group= Continentes)) +geom_path() + 
 	geom_point(alpha=0.7)+geom_text(aes(label = Continentes, colour = Continentes), hjust=1.5, size = 3.5, fontface = "bold")+	
@@ -138,7 +142,8 @@ b = ggplot(BD2, aes(x =id, y=Mortos, color = Continentes, group= Continentes)) +
 
 b.gif =  animate(b, width = 440, height = 340)
 b.gif = image_read(b.gif)
-
+gc()
+gc()
 image_write(b.gif, paste("Gifs/Evolucao-mortos-Continente.gif", sep=""))
 
 
@@ -146,15 +151,27 @@ image_write(b.gif, paste("Gifs/Evolucao-mortos-Continente.gif", sep=""))
 ## Mortos divulgados por dia
 ###############################
 nn = BD1[,2]=="Brasil"
-jpeg('Figs/Mortos-dia.jpg', width=820, height=600)
-s = barplot(c(BD1[nn,3][1],diff(BD1[nn,3]))~BD1[nn,1], xlab="Dias desde o primeiro morto", main ="Brasil", ylab="Mortos divulgados por dia", ylim=c(0,range(diff(BD1[nn,3]))[2]+10))
-text(s,c(BD1[nn,3][1],diff(BD1[nn,3]))+4, c(BD1[nn,3][1], diff(BD1[nn,3])))
+week0 = weekdays(BD1[nn,4])
+col0 = ifelse(week0 == "sábado" | week0 == "domingo", "gray70", "black")
+col0[BD1[nn,4] == "2020-05-01" |BD1[nn,4] =="2020-02-24" | BD1[nn,4] == "2020-04-10" |BD1[nn,4] =="2020-04-21"] = "gray70"
+col0[week0 == "segunda"] = "gray70"
+col0[BD1[nn,4] == "2020-04-22"] = "gray70"
+
+
+jpeg('Figs/Mortos-dia.jpg', width=1720, height=600)
+s = barplot(c(BD1[nn,3][1],diff(BD1[nn,3]))~BD1[nn,1], xlab="Dias desde o primeiro morto", main ="Brasil", ylab="Mortos divulgados por dia", ylim=c(0,range(diff(BD1[nn,3]))[2]+150), col=col0)
+text(s,c(BD1[nn,3][1],diff(BD1[nn,3]))+38, c(BD1[nn,3][1], diff(BD1[nn,3])), cex=1.2)
+mtext("Elaboração: AGPatriota", 1, at = 2, line=3)
+mtext("Dados: humdata", 1, at = 2, line=4)
+legend(1,1200,c("Fins de semana, feriados e segundas","Dias de semana normais exceto segunda"), pch=19, col=c("gray70", "black"), cex=1.5)
 dev.off()
 
 nn0 = (BD1[,2]=="Estados Unidos")
 jpeg('Figs/Mortos-dia-US.jpg', width=820, height=600)
 s = barplot(c(BD1[nn0,3][1],diff(BD1[nn0,3]))~BD1[nn0,1], xlab="Dias desde o primeiro morto", main ="Estados Unidos", ylab="Mortos divulgados por dia", ylim=c(0,range(diff(BD1[nn0,3]))[2]+10))
 #text(s,diff(BD1[nn,3])+4, diff(BD1[nn,3]))
+mtext("Elaboração: AGPatriota", 1, at = 2, line=3)
+mtext("Dados: humdata", 1, at = 2, line=4)
 dev.off()
 
 
