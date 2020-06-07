@@ -12,8 +12,7 @@ require('magick')
 
 BD<- list()
 
-BD[[1]] = read.csv("Data/HIST_PAINEL_COVIDBR_20mai2020.csv", header = TRUE, sep=",")
-BD[[1]] =  read.csv("Data/HIST_PAINEL_COVIDBR_04jun2020.csv", header = TRUE, sep=",")
+BD[[1]] =  read.csv("Data/HIST_PAINEL_COVIDBR_06jun2020.csv", header = TRUE, sep=",")
 
 
 for(i in 1){

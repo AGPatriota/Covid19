@@ -9,7 +9,7 @@ require('magick')
 #BD =  read.csv("Data/HIST_PAINEL_COVIDBR_19mai2020.csv", header = TRUE, sep=",")
 #BD =  read.csv("Data/HIST_PAINEL_COVIDBR_21mai2020.csv", header = TRUE, sep=",")
 
-BD =  read.csv("Data/HIST_PAINEL_COVIDBR_04jun2020.csv", header = TRUE, sep=",")
+BD =  read.csv("Data/HIST_PAINEL_COVIDBR_06jun2020.csv", header = TRUE, sep=",")
 
 
 
@@ -100,9 +100,12 @@ BD$obitosAcumulados2 = BD$obitosAcumulado/BD$Dens
 BD0 <- BD[,c(1:3,8,10,13,18,19,20)]
 
 BD0$data<-as.Date(BD0$data)
+BD0$data<-as.Date(as.character(BD0$data), format="%d-%m-%y")
+
 BD0 <- BD0[BD0[,6]>0,]
 BD0 <- BD0[BD0[,3]== "",]
 BD0 <- BD0[BD0[,2]!= "",]
+BD0 <- BD0[BD0[,5]!= "",]
 BD0 <- na.omit(BD0)
 
 BD0[,2] <- factor(BD0[,2])
@@ -170,7 +173,9 @@ image_write(new_gif , paste("Gifs/Evolucao-mortos-estado.gif", sep=""))
 BD2 = BD1[BD1$estado=="SP",]
 BD2 = BD2[BD2[,6] != "",]
 
-BD2$data = as.Date(BD2$data, format="%Y-%m-%d")
+#BD2$data = as.Date(BD2$data, format="%Y-%m-%d")
+#diff(BD2$data)
+
 BD2$obitosNovos = c(BD2$obitosAcumulado[1],diff(BD2$obitosAcumulado))
 week0 = weekdays(BD2$data)
 col0 = ifelse(week0 == "sábado" | week0 == "domingo", "gray70", "black")
@@ -178,7 +183,7 @@ col0[BD2$data == "2020-05-01" |BD2$data =="2020-02-24" | BD2$data == "2020-04-10
 col0[week0 == "segunda"] = "gray70"
 col0[BD2$data == "2020-04-22"] = "gray70"
 
-jpeg("Figs/Dados-SP.jpg", width=1400, height=550)
+jpeg("Figs/Dados-SP.jpg", width=2000, height=750)
 ss = barplot(BD2$obitosNovos~BD2$data, col=col0, pch=19, ylab="Mortes por dia", main="Mortes diárias divulgadas por Covid  (Estado de São Paulo)", xlab="Dias", ylim=c(0,350),cex.main=2, cex.lab=1.5)
 legend(ss[1],350,c("Fins de semana, feriados e segundas","Dias de semana normais exceto segunda"), pch=19, col=c("gray70", "black"), cex=1.5)
 text(ss,BD2$obitosNovos+5, BD2$obitosNovos, cex=1, font=2)
@@ -235,73 +240,4 @@ ggplot(BDD, aes(x =date, y=residential_percent_change_from_baseline, color = reg
 #	 geom_point(alpha=0.7) +
 			labs(title=paste("Mudança percentual no tempo de permanência na residência por Estado.\nQuanto maior mais tempo em casa. \nZero indica a movimentação usual.  \n \nDados: https://www.google.com/covid19/mobility/ "), x = 'Data', y = '%', caption="Elaboração: AGPatriota") +theme(legend.title = element_blank(),legend.text=element_text(size = 18))+ theme(text =element_text(size=21),plot.title = element_text(size = 21),panel.background = element_rect(fill = "snow2"))+scale_color_manual(values=c("orange", "red3","green","blue3", "purple"))# + geom_text(aes(label =  sub_region_1, colour = region), hjust=1.5, size = 3.5, fontface = "bold")
 dev.off()
-
-
-#########################3
-#Tentativas abaixo
-##########################
-
-#Tentar pensar em uma medida de mobilidade com o tempo. Menos tempo até atingir imobilidade máxima
-
-#############################
-#Velocidade de mortos por dia
-#############################
-
-#SP
-X11()
-y.SP=diff(BD1[BD1[,3]=="SP",5])/BD1[BD1[,3]=="SP",5][-length(BD1[BD1[,3]=="SP",5])]
-x.SP = BD1[BD1[,3]=="SP",1][-1]
-#Amazonas
-y.AM=diff(BD1[BD1[,3]=="AM",5])/BD1[BD1[,3]=="AM",5][-length(BD1[BD1[,3]=="AM",5])]
-x.AM = BD1[BD1[,3]=="AM",1][-1]
-
-sub = TRUE#-c(1:10)
-plot(y.SP[sub]~x.SP[sub], type="l", lwd=3, ylim=range(y.SP[sub],y.AM[sub]))
-points(y.AM[sub]~x.AM[sub], pch=19, type="l", col="tomato3", lwd=3)
-
-y=list()
-x = list()
-for(j in levels(BD1[,3])){
-y[[j]] = diff(BD1[BD1[,3]==j,5])/BD1[BD1[,3]==j,5][-length(BD1[BD1[,3]==j,5])]*100
-x[[j]] = BD1[BD1[,3]==j,1][-1]
-}
-plot(y$SP~x$SP, type="l", lwd=3, ylim=range(y), xlab="Dias desde a primeira morte", main="Crescimento diário (%) de mortes por Covid-19 ", ylab="Percentagem")
-for(j in levels(BD1[,3])){
-points(y[[j]]~x[[j]], lty=2, type="l", col="gray50", lwd=1)
-}
-points(y$SP~x$SP, type="l",lty=1, lwd=3)
-points(y$AM~x$AM, type="l",lty=1, lwd=3, col="green")
-points(y$CE~x$CE, type="l",lty=1, lwd=3, col="tomato3")
-mtext("Elaboração: AGPatriota", 1, at= 2, line=3)
-
-
-
-
-#Mobilidade
-#São Paulo
-BD.aux = BDD[BDD[,1]=="State of São Paulo",c(2,8)]
-names(BD.aux) = c("data", "mobilidade")
-plot(BD.aux$mobilidade~BD.aux$data, ylim=c(-10,30))
-abline(v= BD1[BD1[,3]=="SP",c(4)][1])
-BD.aux = merge(BD.aux,BD1[BD1[,3]=="SP",c(4,5)])
-BD.aux = cbind(1:dim(BD.aux)[1], BD.aux)
-lm(obitosAcumulados~mobilidade + I(mobilidade^2),data = BD.aux)
-par(mfrow=c(2,1))
-plot(BD.aux$obitosAcumulados~BD.aux$data)
-plot(BD.aux$mobilidade~BD.aux$data)
-
-
-#Amazonas
-BD.aux = BDD[BDD[,1]=="State of Amazonas",c(2,8)]
-names(BD.aux) = c("data", "mobilidade")
-plot(BD.aux$mobilidade~BD.aux$data, ylim=c(-10,30))
-abline(v= BD1[BD1[,3]=="AM",c(4)][1])
-
-BD.aux = merge(BD.aux,BD1[BD1[,3]=="AM",c(4,5)])
-BD.aux = cbind(1:dim(BD.aux)[1], BD.aux)
-lm(obitosAcumulados~mobilidade + I(mobilidade^2),data = BD.aux)
-par(mfrow=c(2,1))
-plot(BD.aux$obitosAcumulados~BD.aux$data)
-plot(BD.aux$mobilidade~BD.aux$data)
-
 
