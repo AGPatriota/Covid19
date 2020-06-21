@@ -81,7 +81,7 @@ a = ggplot(BD1, aes(x =id, y=obitosAcumulado, color = regiao, group= municipio))
 				theme(legend.position = "none")+theme(legend.title = element_blank())+ theme(text =element_text(size=11),plot.title = element_text(size = 11))+
 					view_follow()
 
-a1 = ggplot(BD1, aes(x =id, y=log(obitosAcumulado), color = regiao, group= municipio)) +geom_path() + 
+a1 = ggplot(BD1, aes(x =id, y=log(obitosAcumulado,base=10), color = regiao, group= municipio)) +geom_path() + 
 	geom_point(alpha=0.7)+geom_text(data=subset(BD1, BD1[,7]>800),aes(label = municipio, colour =regiao), hjust=1.5, size = 3.5, fontface = "bold")+
 		transition_reveal(along=id) +
 			labs(title=paste("Escala Log"), x = 'Dias desde o centésimo morto\n (Elaborado por: AGPatriota)', y = '')+ 	

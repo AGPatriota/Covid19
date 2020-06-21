@@ -130,7 +130,7 @@ a = ggplot(BD1, aes(x =id, y=obitosAcumulado, color = regiao, group= estado)) +g
 				theme(legend.position = "none")+theme(legend.title = element_blank())+ theme(text =element_text(size=11),plot.title = element_text(size = 11))+
 					view_follow()
 
-a1 = ggplot(BD1, aes(x =id, y=log(obitosAcumulado), color = regiao, group= estado)) +geom_path() + 
+a1 = ggplot(BD1, aes(x =id, y=log(obitosAcumulado,base=10), color = regiao, group= estado)) +geom_path() + 
 	geom_point(alpha=0.7)+geom_text(data=subset(BD1, BD1[,7]>200),aes(label = estado, colour =regiao), hjust=1.5, size = 3.5, fontface = "bold")+
 		transition_reveal(along=id) +
 			labs(title=paste("Escala log"), x = 'Dias desde o primeiro morto', y = '')+ 	
@@ -144,7 +144,7 @@ a2 = ggplot(BD1, aes(x =id, y=obitosAcumulados1, color = regiao, group= estado))
 				theme(legend.position = "none")+theme(legend.title = element_blank())+ theme(text =element_text(size=11),plot.title = element_text(size = 11))+
 					view_follow()
 
-#a3 = ggplot(BD1, aes(x =id, y=log(obitosAcumulados1), color = regiao, group= estado)) +geom_path() + 
+#a3 = ggplot(BD1, aes(x =id, y=log(obitosAcumulados1,base=10), color = regiao, group= estado)) +geom_path() + 
 #	geom_point(alpha=0.7)+geom_text(data=subset(BD1, BD1[,7]>200),aes(label = estado, colour =regiao), hjust=1.5, size = 3.5, fontface = "bold")+
 #		transition_reveal(along=id) +
 #			labs(title=paste(""), x = '(Elaborado por: AGPatriota)', y = 'Log do número de mortos por covid (1Mi hab)')+ 	
@@ -217,7 +217,7 @@ dev.off()
 
 
 #jpeg("Figs/Log-Dados-SP.jpg", width=900, height=550)
-#plot(log(BD2$obitosAcumulado)~BD2$data, col=col0, pch=19, ylab="logarítmo de mortes acumuladas", main="Mortes acumuladas divulgadas por Covid (Estado de São Paulo)", xlab="Dias",cex.main=2, cex.lab=1.5, ylim=c(0,9.5))
+#plot(log(BD2$obitosAcumulado,base=10)~BD2$data, col=col0, pch=19, ylab="logarítmo de mortes acumuladas", main="Mortes acumuladas divulgadas por Covid (Estado de São Paulo)", xlab="Dias",cex.main=2, cex.lab=1.5, ylim=c(0,9.5))
 #abline(v = BD2$data[BD2$data=="2020-03-17"], lwd=4, col="gray50")
 #abline(v = BD2$data[BD2$data=="2020-03-24"], lwd=4, col="gray50")
 #abline(v = BD2$data[BD2$data=="2020-05-07"],lwd=4, col="gray50")

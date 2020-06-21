@@ -106,43 +106,45 @@ a = ggplot(BD1, aes(x =id, y=Mortos, color = Países, group= Países)) +geom_pat
 	 geom_point(alpha=0.7)+geom_text(aes(label = Países, colour = Países), hjust=1.5, size = 4.5, fontface = "bold")+
 	 	transition_reveal(along=id) +
 			labs(title=paste("Óbitos segundo data de divulgação."), x = 'Dias desde o centésimo morto \n  Dados: https://data.humdata.org/', y = '')+
-				theme(legend.position = "none")+theme(legend.title = element_blank())+ theme(text =element_text(size=15))+
+				theme(legend.position = "none")+theme(legend.title = element_blank())+ theme(text =element_text(size=11))+
 					view_follow()
 
 aa = ggplot(BD1, aes(x =id, y=Mortos/Pop0, color = Países, group= Países)) +geom_path() + 
 	 geom_point(alpha=0.7)+geom_text(aes(label = Países, colour = Países), hjust=1.5, size = 4.5, fontface = "bold")+
 	 	transition_reveal(along=id) +
-			labs(title=paste("Por milhão de habitantes "), x = 'Dias desde o centésimo morto \n (Elaborado por: AGPatriota)', y = '')+
-				theme(legend.position = "none")+theme(legend.title = element_blank())+ theme(text =element_text(size=15))+
+			labs(title=paste("Por milhão de habitantes "), x = 'Dias desde o centésimo morto', y = '')+
+				theme(legend.position = "none")+theme(legend.title = element_blank())+ theme(text =element_text(size=11))+
 					view_follow()
 
-#a1 = ggplot(BD1, aes(x =id, y=log(Mortos), color = Países, group= Países)) +geom_path() + 
-#	geom_point(alpha=0.7)+geom_text(aes(label = Países, colour = Países), hjust=1.5, size = 3.5, fontface = "bold")+
-#		transition_reveal(along=id) +
-#			labs(title=paste("(Log do número de óbitos)"), x = '(Elaborado por: AGPatriota)', y = 'Log do número de mortos')+ 	
-#				theme(text =element_text(size=10),plot.title = element_text(size = 11))+theme(legend.position = "none")+
-#					view_follow()
+a1 = ggplot(BD1, aes(x =id, y=log(Mortos, base=10), color = Países, group= Países)) +geom_path() + 
+	geom_point(alpha=0.7)+geom_text(aes(label = Países, colour = Países), hjust=1.5, size = 3.5, fontface = "bold")+
+		transition_reveal(along=id) +
+			labs(title=paste("Escala log"), x = 'Dias desde o centésimo morto \n (Elaborado por: AGPatriota)', y = '')+ 	
+				theme(text =element_text(size=11),plot.title = element_text(size = 11))+theme(legend.position = "none")+
+					view_follow()
 
-#aa1 = ggplot(BD1, aes(x =id, y=log(Mortos/Pop0), color = Países, group= Países)) +geom_path() + 
+#aa1 = ggplot(BD1, aes(x =id, y=log(Mortos/Pop0, base=10), color = Países, group= Países)) +geom_path() + 
 #	geom_point(alpha=0.7)+geom_text(aes(label = Países, colour = Países), hjust=1.5, size = 3.5, fontface = "bold")+
 #		transition_reveal(along=id) +
 #			labs(title=paste("(Log do número de mortos)"), x = '', y = '')+ 	
 #				theme(text =element_text(size=10),plot.title = element_text(size = 11))+theme(legend.position = "none")+
 #					view_follow()
 
-a.gif =  animate(a, width = 360, height = 440)
+a.gif =  animate(a, width = 320, height = 300)
 a.gif = image_read(a.gif)
-aa.gif =  animate(aa, width = 360, height = 440)
+aa.gif =  animate(aa, width = 320, height = 300)
 aa.gif = image_read(aa.gif)
+a1.gif =  animate(a1, width = 320, height = 300)
+a1.gif = image_read(a1.gif)
 
 gc()
 gc()
 
 
 #Appending two gifs
-new_gif <- image_append(c(a.gif[1], aa.gif[1]), stack = FALSE)
+new_gif <- image_append(c(a.gif[1], a1.gif[1], aa.gif[1]), stack = FALSE)
 for(k in 2:100){
-  combined <- image_append(c(a.gif[k], aa.gif[k]), stack = FALSE)
+  combined <- image_append(c(a.gif[k], a1.gif[k], aa.gif[k]), stack = FALSE)
   new_gif <- c(new_gif, combined)
 }
 image_write(new_gif , paste("Gifs/Evolucao-mortos.gif", sep=""))

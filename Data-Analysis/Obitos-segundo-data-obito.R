@@ -207,8 +207,6 @@ dev.off()
 #Fazer gráficos por idado e outros interessantes
 
 #Por escolaridade
-jpeg("Figs/Internado-Hospital.jpg", width = 894, height = 600)
-
 IBGE = c(7, 35.3,7.8, 31.9, 18.1)
 x0 = (table(BD$DT_EVOLUCA[BD$CS_ESCOL_N==0]))/IBGE[1]
 x1 = (table(BD$DT_EVOLUCA[BD$CS_ESCOL_N==1| BD$CS_ESCOL_N==3| BD$CS_ESCOL_N==2| BD$CS_ESCOL_N==4]))/(100-IBGE[1])
@@ -217,8 +215,6 @@ jpeg("Figs/Escolaridade.jpg", width = 894, height = 600)
 xx = data.frame(Obitos = c(x0,x1), Esco = c(rep("Analfabeto", length(x0)),rep("Alfabetizado", length(x1))), Data =c( as.Date(names(x0)), as.Date(names(x1))))
 ggplot(xx, aes(y = Obitos, x = Data, color=Esco))  + geom_line(size =2)+	labs(title=paste("Óbitos (por míl hab) segundo a data de óbito e alfabetização (Brasil)."), x = 'Data', y = '') + theme(legend.title = element_blank())+ theme(text =element_text(size=13))
 dev.off()
-
-
 
 
 
