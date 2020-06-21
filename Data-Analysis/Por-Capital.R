@@ -12,7 +12,7 @@ require('magick')
 
 BD<- list()
 
-BD[[1]] =  read.csv("Data/HIST_PAINEL_COVIDBR_06jun2020.csv", header = TRUE, sep=",")
+BD[[1]] =  read.csv("Data/HIST_PAINEL_COVIDBR_20jun2020.csv", header = TRUE, sep=",")
 
 
 for(i in 1){
@@ -44,7 +44,8 @@ BD[[i]]$Dens[BD[[i]]$estado=="TO"] <- 5.66
 BD[[i]]$Dens[BD[[i]]$estado=="AC"] <- 5.37
 BD[[i]]$Dens[BD[[i]]$estado=="AP"] <- 5.94
 BD[[i]]$Dens[BD[[i]]$estado=="RR"] <- 2.7
-
+#Problemas de conversão
+BD[[i]]$populacaoTCU2019 <- as.numeric(as.character(BD[[i]]$populacaoTCU2019))
 BD[[i]]$obitosAcumulados1 = BD[[i]]$obitosAcumulado/BD[[i]]$populacaoTCU2019*1000000
 BD[[i]]$obitosAcumulados2 = BD[[i]]$obitosAcumulado/BD[[i]]$Dens
 }
@@ -71,24 +72,26 @@ for(j in as.numeric(names(table(BBD0[,9])))){
 
 BD1<- BD1[BD1[,7]!=611,]
 
-
+gc()
+gc()
 a = ggplot(BD1, aes(x =id, y=obitosAcumulado, color = regiao, group= municipio)) +geom_path() + 
-	 geom_point(alpha=0.7)+geom_text(data=subset(BD1, BD1[,7]>200),aes(label =municipio, colour =regiao), hjust=1.5, size = 3.5, fontface = "bold")+
+	 geom_point(alpha=0.7)+geom_text(data=subset(BD1, BD1[,7]>800),aes(label =municipio, colour =regiao), hjust=1.5, size = 3.5, fontface = "bold")+
 	 	transition_reveal(along=id) +
-			labs(title=paste("Evolução do número de mortos por Município."), x = 'Dias desde o centésimo morto', y = 'Número de mortos por covid')+
+			labs(title=paste("Óbitos segundo a data de divulgação por Município."), x = 'Dias desde o centésimo morto\n Dados: https://covid.saude.gov.br/', y = '')+
 				theme(legend.position = "none")+theme(legend.title = element_blank())+ theme(text =element_text(size=11),plot.title = element_text(size = 11))+
 					view_follow()
 
 a1 = ggplot(BD1, aes(x =id, y=log(obitosAcumulado), color = regiao, group= municipio)) +geom_path() + 
-	geom_point(alpha=0.7)+geom_text(data=subset(BD1, BD1[,7]>200),aes(label = municipio, colour =regiao), hjust=1.5, size = 3.5, fontface = "bold")+
+	geom_point(alpha=0.7)+geom_text(data=subset(BD1, BD1[,7]>800),aes(label = municipio, colour =regiao), hjust=1.5, size = 3.5, fontface = "bold")+
 		transition_reveal(along=id) +
-			labs(title=paste("Dados: https://covid.saude.gov.br/"), x = 'Dias desde o centésimo morto', y = 'Log do número de mortos por covid')+ 	
+			labs(title=paste("Escala Log"), x = 'Dias desde o centésimo morto\n (Elaborado por: AGPatriota)', y = '')+ 	
 				theme(text =element_text(size=11),plot.title = element_text(size = 11))+theme(legend.position = "none")+
 					view_follow()
 
-#a2 = ggplot(BD1, aes(x =id, y=obitosAcumulados1, color = regiao, group= municipio)) +geom_path() +  geom_point(alpha=0.7)+geom_text(data=subset(BD1, BD1[,7]>200),aes(label = municipio, colour = regiao), hjust=1.5, size = 3.5, fontface = "bold")+
+#a2 = ggplot(BD1, aes(x =id, y=obitosAcumulados1, color = regiao, group= municipio)) +geom_path() +  
+#	geom_point(alpha=0.7)+geom_text(data=subset(BD1, BD1[,7]>800),aes(label = municipio, colour = regiao), hjust=1.5, size = 3.5, fontface = "bold")+
 #	 	transition_reveal(along=id) +
-#			labs(title=paste(""), x = 'Dias desde o primeiro morto', y = 'Número total de mortos por covid (1Mi hab)')+
+#			labs(title=paste("Por milhão de habitantes"), x = 'Dias desde o primeiro morto \n (Elaborado por: AGPatriota)', y = '')+
 #				theme(legend.position = "none")+theme(legend.title = element_blank())+ theme(text =element_text(size=11),plot.title = element_text(size = 11))+
 #					view_follow()
 
@@ -98,14 +101,16 @@ a1 = ggplot(BD1, aes(x =id, y=log(obitosAcumulado), color = regiao, group= munic
 #			labs(title=paste(""), x = '(Elaborado por: AGPatriota)', y = 'Log do número de mortos por covid (1Mi hab)')+ 	
 #				theme(text =element_text(size=11),plot.title = element_text(size = 11))+theme(legend.position = "none")+				view_follow()
 
-a.gif =  animate(a, width = 280, height = 240)
+a.gif =  animate(a, width = 320, height = 300)
 a.gif = image_read(a.gif)
-a1.gif =  animate(a1, width = 280, height = 240)
+a1.gif =  animate(a1, width = 320, height = 300)
 a1.gif = image_read(a1.gif)
-#a2.gif =  animate(a2, width = 280, height = 240)
+#a2.gif =  animate(a2, width = 320, height = 300)
 #a2.gif = image_read(a2.gif)
 #a3.gif =  animate(a3, width = 280, height = 240)
 #a3.gif = image_read(a3.gif)
+gc()
+gc()
 
 
 #Appending two gifs
@@ -121,5 +126,7 @@ combined <- image_append(c(a.gif[k], a1.gif[k]))
 }
 
 image_write(new_gif , paste("Gifs/Evolucao-mortos-municipio.gif", sep=""))
-
+gc()
+gc()
+   
 

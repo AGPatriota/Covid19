@@ -1,0 +1,10 @@
+#Source: https://www.clas.kitasato-u.ac.jp/~fujiwara/Mathematica/GIFtoMP4.html
+
+ffmpeg -r 10 -i Evolucao-mortos-estado.gif -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -crf 5 Evolucao-mortos-estado.mp4
+
+
+ffmpeg -r 10 -i Evolucao-mortos-municipio.gif -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -crf 5 Evolucao-mortos-municipio.mp4
+
+
+ffmpeg -r 10 -i Evolucao-mortos.gif -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -crf 5 Evolucao-mortos.mp4
+

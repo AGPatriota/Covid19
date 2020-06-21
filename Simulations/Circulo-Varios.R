@@ -11,7 +11,7 @@ kk=0
 
 #Minimum distance to avoid being infected "dist0" varies in (1.2,1.7,2.2,2.7)
 
-for(dist0 in c(1.2,1.7,2.2,2.7)){
+for(dist0 in c(0.8,1.2,1.7,2.2)){
 	kk=kk+1
 
 	#Scenario Parameters
@@ -76,24 +76,23 @@ for(dist0 in c(1.2,1.7,2.2,2.7)){
 	#Probability of recovering of an infected after 10 steps
 	rec        = 0.08/pp
 
-	#Probability of transmission(or infection) from an infected if he is close
-	prob.inf   = 0.6
 
 	#Probability of a re
 	rever.susc = 0.0001/pp
 	rever.dea  = 0.0001/pp
 
+	#Probability of transmission(or infection) from an infected if he is close
+	prob.inf   = 0.6/2
 
-	step0      = 0.4
-	Interv     = FALSE
-	inter.prop = 0.01
 
 	#Proportion of the population that is in lockdown	
-	Pop.locked = 0.0
-
+	Pop.locked = 0.95
 
 	n.death=3
 
+	step0      = 0.4
+	#Don.t change
+	Interv     = FALSE 
 
 	#All are susceptible
 	col0       = rep("royalblue3", Pop)
@@ -178,7 +177,9 @@ BD2[,2] = BD2[,2]/Pop*100
  
 a= ggplot(BD2,aes(x=Gen, y=Cases, color=Type)) +geom_path() + geom_point(alpha=0.7)+ 
 	labs(title = 'Proportion of Cases (%)', x = 'steps', y = '')+
-		scale_color_manual(values=c("Black", "tomato2","palegreen3","royalblue3"),labels =expression(paste("Deaths:         ", frac(dD,dt) == mu * I),paste("Infected:        ",frac(dI,dt) == r* beta*S*frac(I,N)-gamma* I - mu*I),paste("Recovered:   ",frac(dR,dt) == gamma* I),paste("Susceptible: ",frac(dS,dt) == -r* beta*S*frac(I,N))))+ 	
+		scale_color_manual(values=c("Black", "tomato2","palegreen3","royalblue3"),labels =c("Deaths", "Infected", "Recovered","Susceptible"))+ 	
+		#	geom_text(data=BD2,aes(label = paste(round(Cases), "%", sep=""), colour =Type), hjust=1, size = 3.5, fontface = "bold", nudge_y = 2.05,nudge_x = 2.05)+ 
+		#		geom_text(data=subset(BD2,BD2[BD2$Type=="Deaths",2]>3/Pop),aes(label = "Lockdown 95%"), size = 3.5, fontface = "bold")+ 
 			theme(legend.text.align = 0) +	transition_reveal(along=Gen) +ease_aes('linear')
 
 
@@ -212,6 +213,6 @@ for(k in 2:g){
 }
 
 print(kk)
-image_write(new_gif, paste("Gifs/Covid19-",kk,".gif", sep=""))
+image_write(new_gif, paste("Gifs/Covid19-inter95-prob30-",kk,".gif", sep=""))
 }
 

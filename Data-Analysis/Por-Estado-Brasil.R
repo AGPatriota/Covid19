@@ -9,9 +9,12 @@ require('magick')
 #BD =  read.csv("Data/HIST_PAINEL_COVIDBR_19mai2020.csv", header = TRUE, sep=",")
 #BD =  read.csv("Data/HIST_PAINEL_COVIDBR_21mai2020.csv", header = TRUE, sep=",")
 
-BD =  read.csv("Data/HIST_PAINEL_COVIDBR_06jun2020.csv", header = TRUE, sep=",")
+BD =  read.csv("Data/HIST_PAINEL_COVIDBR_20jun2020.csv", header = TRUE, sep=",")
 
 
+#BBBD = BD[!is.na(BD$emAcompanhamentoNovos),c(8,10,11,12,13,14,15,16)]
+#BBBD$data <- as.Date(as.character(as.Date(BBBD$data)), format="%d-%m-%y")
+#barplot(BBBD$emAcompanhamentoNovos/1000~BBBD$data, ylab="", main="Casos de covid em acompanhamento (por mil) no Brasil", ylim=c(0,500), xlab="")
 
 
 BD$Dens=NA
@@ -105,7 +108,9 @@ BD0$data<-as.Date(as.character(BD0$data), format="%d-%m-%y")
 BD0 <- BD0[BD0[,6]>0,]
 BD0 <- BD0[BD0[,3]== "",]
 BD0 <- BD0[BD0[,2]!= "",]
+
 BD0 <- BD0[BD0[,5]!= "",]
+
 BD0 <- na.omit(BD0)
 
 BD0[,2] <- factor(BD0[,2])
@@ -115,86 +120,154 @@ for(j in levels(BD0[,2])){
 	BD1 <- rbind(BD1,cbind(id=1:dim(aux)[1],aux))
 }
 
-
+BD1 = BD1[as.numeric(BD1[,6]) >10,]
 
 
 a = ggplot(BD1, aes(x =id, y=obitosAcumulado, color = regiao, group= estado)) +geom_path() + 
 	 geom_point(alpha=0.7)+geom_text(data=subset(BD1, BD1[,7]>200),aes(label = estado, colour =regiao), hjust=1.5, size = 3.5, fontface = "bold")+
 	 	transition_reveal(along=id) +
-			labs(title=paste("Evolução do número de mortos por Estado."), x = 'Dias desde o primeiro morto', y = 'Número de mortos por covid')+
+			labs(title=paste("Óbitos segundo a data da divulgação."), x = 'Dias desde o primeiro morto \n Dados: https://covid.saude.gov.br/', y = '')+
 				theme(legend.position = "none")+theme(legend.title = element_blank())+ theme(text =element_text(size=11),plot.title = element_text(size = 11))+
 					view_follow()
 
 a1 = ggplot(BD1, aes(x =id, y=log(obitosAcumulado), color = regiao, group= estado)) +geom_path() + 
 	geom_point(alpha=0.7)+geom_text(data=subset(BD1, BD1[,7]>200),aes(label = estado, colour =regiao), hjust=1.5, size = 3.5, fontface = "bold")+
 		transition_reveal(along=id) +
-			labs(title=paste("Dados: https://covid.saude.gov.br/"), x = 'Dias desde o primeiro morto', y = 'Log do número de mortos por covid')+ 	
+			labs(title=paste("Escala log"), x = 'Dias desde o primeiro morto', y = '')+ 	
 				theme(text =element_text(size=11),plot.title = element_text(size = 11))+theme(legend.position = "none")+
 					view_follow()
 
 a2 = ggplot(BD1, aes(x =id, y=obitosAcumulados1, color = regiao, group= estado)) +geom_path() + 
 	 geom_point(alpha=0.7)+geom_text(data=subset(BD1, BD1[,7]>200),aes(label = estado, colour = regiao), hjust=1.5, size = 3.5, fontface = "bold")+
 	 	transition_reveal(along=id) +
-			labs(title=paste(""), x = 'Dias desde o primeiro morto', y = 'Número total de mortos por covid (1Mi hab)')+
+			labs(title=paste("Por milhão de habitantes"), x = 'Dias desde o primeiro morto \n (Elaborado por: AGPatriota)', y = '')+
 				theme(legend.position = "none")+theme(legend.title = element_blank())+ theme(text =element_text(size=11),plot.title = element_text(size = 11))+
 					view_follow()
 
-a3 = ggplot(BD1, aes(x =id, y=log(obitosAcumulados1), color = regiao, group= estado)) +geom_path() + 
-	geom_point(alpha=0.7)+geom_text(data=subset(BD1, BD1[,7]>200),aes(label = estado, colour =regiao), hjust=1.5, size = 3.5, fontface = "bold")+
-		transition_reveal(along=id) +
-			labs(title=paste(""), x = '(Elaborado por: AGPatriota)', y = 'Log do número de mortos por covid (1Mi hab)')+ 	
-				theme(text =element_text(size=11),plot.title = element_text(size = 11))+theme(legend.position = "none")+
-					view_follow()
+#a3 = ggplot(BD1, aes(x =id, y=log(obitosAcumulados1), color = regiao, group= estado)) +geom_path() + 
+#	geom_point(alpha=0.7)+geom_text(data=subset(BD1, BD1[,7]>200),aes(label = estado, colour =regiao), hjust=1.5, size = 3.5, fontface = "bold")+
+#		transition_reveal(along=id) +
+#			labs(title=paste(""), x = '(Elaborado por: AGPatriota)', y = 'Log do número de mortos por covid (1Mi hab)')+ 	
+#				theme(text =element_text(size=11),plot.title = element_text(size = 11))+theme(legend.position = "none")+
+#					view_follow()
 
-a.gif =  animate(a, width = 280, height = 240)
+a.gif =  animate(a, width = 320, height = 300)
 a.gif = image_read(a.gif)
-a1.gif =  animate(a1, width = 280, height = 240)
+a1.gif =  animate(a1, width = 320, height = 300)
 a1.gif = image_read(a1.gif)
-a2.gif =  animate(a2, width = 280, height = 240)
+a2.gif =  animate(a2, width = 320, height = 300)
 a2.gif = image_read(a2.gif)
-a3.gif =  animate(a3, width = 280, height = 240)
-a3.gif = image_read(a3.gif)
+#a3.gif =  animate(a3, width = 280, height = 240)
+#a3.gif = image_read(a3.gif)
 
+gc()
+gc()
 
 #Appending two gifs
-new_gif <- image_append(image_join(image_append(c(a.gif[1], a1.gif[1])),image_append(c(a2.gif[1], a3.gif[1]))), stack = TRUE)
+#new_gif <- image_append(image_join(image_append(c(a.gif[1], a1.gif[1])),image_append(c(a2.gif[1], a3.gif[1]))), stack = TRUE)
+new_gif <- image_append(c(a.gif[1], a1.gif[1],a2.gif[1]))
 
 
 for(k in 2:100){
-  combined <- image_append(image_join(image_append(c(a.gif[k], a1.gif[k])),image_append(c(a2.gif[k], a3.gif[k]))),  stack = TRUE)
+#  combined <- image_append(image_join(image_append(c(a.gif[k], a1.gif[k])),image_append(c(a2.gif[k], a3.gif[k]))),  stack = TRUE)
+  combined <- image_append(c(a.gif[k], a1.gif[k], a2.gif[k]))
   new_gif <- c(new_gif, combined)
 }
 
 image_write(new_gif , paste("Gifs/Evolucao-mortos-estado.gif", sep=""))
+gc()
+gc()
 
 
-
+###################################
+#Estado de São Paulo
+###################################
 
 BD2 = BD1[BD1$estado=="SP",]
-BD2 = BD2[BD2[,6] != "",]
+BD2 = BD2[as.numeric(BD2[,6]) >10,]
 
-#BD2$data = as.Date(BD2$data, format="%Y-%m-%d")
-#diff(BD2$data)
+#Movimentação 16/03
+#Quarentena em SP 24/03
+#máscaras em SP 07/05 Uso obrigatório 
+#11/05 Rodízio ampliado
 
 BD2$obitosNovos = c(BD2$obitosAcumulado[1],diff(BD2$obitosAcumulado))
 week0 = weekdays(BD2$data)
-col0 = ifelse(week0 == "sábado" | week0 == "domingo", "gray70", "black")
-col0[BD2$data == "2020-05-01" |BD2$data =="2020-02-24" | BD2$data == "2020-04-10" |BD2$data =="2020-04-21"] = "gray70"
-col0[week0 == "segunda"] = "gray70"
-col0[BD2$data == "2020-04-22"] = "gray70"
+col0 = ifelse(week0 == "domingo" | week0 == "segunda", 4, 19)
+ma <- function(x, n = 7){filter(x, rep(1 / n, n), sides = 1)}
 
-jpeg("Figs/Dados-SP.jpg", width=2000, height=750)
-ss = barplot(BD2$obitosNovos~BD2$data, col=col0, pch=19, ylab="Mortes por dia", main="Mortes diárias divulgadas por Covid  (Estado de São Paulo)", xlab="Dias", ylim=c(0,350),cex.main=2, cex.lab=1.5)
-legend(ss[1],350,c("Fins de semana, feriados e segundas","Dias de semana normais exceto segunda"), pch=19, col=c("gray70", "black"), cex=1.5)
-text(ss,BD2$obitosNovos+5, BD2$obitosNovos, cex=1, font=2)
-mtext("Elaboração: AGPatriota", 1, at= ss[1], line=3)
+jpeg("Figs/Dados-Divul-SP.jpg", width=800, height=550)
+ss = plot(BD2$obitosNovos~BD2$data, lwd = 7, type="l", col="slateblue2", lty=1, ylab="", main="Óbitos diários segundo data da divulgação (Estado de São Paulo)", xlab="Dias", ylim=c(0,400),cex=1.6,cex.main=1.8, cex.lab=1.6)
+ points(BD2$obitosNovos~BD2$data,pch=col0, cex=1.5, lwd=2)
+
+abline(v = BD2$data[BD2$data=="2020-03-17"], lwd=4, col="gray50")
+abline(v = BD2$data[BD2$data=="2020-03-24"], lwd=4, col="gray50")
+abline(v = BD2$data[BD2$data=="2020-05-07"],lwd=4, col="gray50")
+abline(v = BD2$data[BD2$data=="2020-05-11"],lwd=4, col="gray50")
+mtext("decreto",1, at= BD2$data[BD2$data=="2020-03-17"], cex=0.8 )
+mtext("quaren",1, at= BD2$data[BD2$data=="2020-03-24"] , cex=0.8)
+mtext("másc",1, at= BD2$data[BD2$data=="2020-05-07"] -1, cex=0.8)
+mtext("rod_amp",1, at= BD2$data[BD2$data=="2020-05-11"]+1 , cex=0.8)
+points((BD2$obitosNovos~BD2$data),type="l", lty=2, lwd = 0.4)
+
+points(ma(BD2$obitosNovos)~BD2$data,type="l", lty=3, lwd=4, col="gray10")
+legend(BD2$data[3],380,c("Domingos e segundas","Outros dias da semana", "Média móvel de 7 dias"), pch=c(4,19,NA),  lwd = c(2), cex=1.5, lty=c(1,1,2))
+mtext("Elaboração: AGPatriota", 1, at= BD2$data[3], line=3)
 dev.off()
 
 
-jpeg("Figs/Log-Dados-SP.jpg", width=900, height=550)
-plot(log(BD2$obitosAcumulado)~BD2$data, col=col0, pch=19, ylab="logarítmo de mortes acumuladas", main="Mortes acumuladas divulgadas por Covid (Estado de São Paulo)", xlab="Dias",cex.main=2, cex.lab=1.5, ylim=c(0,9.5))
-legend(BD2$data[1],9.5,c("Fins de semana, feriados e segundas","Dias de semana normais exceto segunda"), pch=19, col=c("gray70", "black"), cex=1.5)
-mtext("Elaboração: AGPatriota", 1, at= BD2$data[1], line=3)
+#jpeg("Figs/Log-Dados-SP.jpg", width=900, height=550)
+#plot(log(BD2$obitosAcumulado)~BD2$data, col=col0, pch=19, ylab="logarítmo de mortes acumuladas", main="Mortes acumuladas divulgadas por Covid (Estado de São Paulo)", xlab="Dias",cex.main=2, cex.lab=1.5, ylim=c(0,9.5))
+#abline(v = BD2$data[BD2$data=="2020-03-17"], lwd=4, col="gray50")
+#abline(v = BD2$data[BD2$data=="2020-03-24"], lwd=4, col="gray50")
+#abline(v = BD2$data[BD2$data=="2020-05-07"],lwd=4, col="gray50")
+#abline(v = BD2$data[BD2$data=="2020-05-11"],lwd=4, col="gray50")
+#mtext("decreto",1, at= BD2$data[BD2$data=="2020-03-17"], cex=0.8 )
+#mtext("quaren",1, at= BD2$data[BD2$data=="2020-03-24"] , cex=0.8)
+#mtext("másc",1, at= BD2$data[BD2$data=="2020-05-07"] -1, cex=0.8)
+#mtext("rod_amp",1, at= BD2$data[BD2$data=="2020-05-11"]+1 , cex=0.8)
+#legend(BD2$data[1],9.5,c("Fins de semana, feriados e segundas","Dias de semana normais exceto segunda"), pch=19, col=c("tomato", "black"), cex=1.5)
+#mtext("Elaboração: AGPatriota", 1, at= BD2$data[1], line=3)
+#dev.off()
+
+###################################
+#Brasil
+###################################
+
+BD2 = BD[,c(1:3,8,10,13,18,19,20)]
+BD2 = BD2[BD2$estado=="",]
+BD2 = BD2[BD2[,6] >10,]
+
+BD2$data<-as.Date(BD2$data)
+BD2$data<-as.Date(as.character(BD2$data), format="%d-%m-%y")
+
+#Movimentação 16/03
+#Quarentena em SP 24/03
+#máscaras em SP 07/05 Uso obrigatório 
+#11/05 Rodízio ampliado
+
+BD2$obitosNovos = c(BD2$obitosAcumulado[1],diff(BD2$obitosAcumulado))
+week0 = weekdays(BD2$data)
+col0 = ifelse(week0 == "domingo" | week0 == "segunda", 4, 19)
+ma <- function(x, n = 7){filter(x, rep(1 / n, n), sides = 1)}
+
+jpeg("Figs/Dados-Divul-Brasil.jpg", width=800, height=550)
+ss = plot(BD2$obitosNovos~BD2$data, lwd = 7, type="l", col="slateblue2", lty=1, ylab="", main="Óbitos diários segundo data da divulgação (Brasil)", xlab="Dias", ylim=c(0,1800),cex=1.6,cex.main=1.8, cex.lab=1.6, xlim=c(range( BD2$data)[1]-5, range( BD2$data)[2]))
+ points(BD2$obitosNovos~BD2$data,pch=col0, cex=1.5, lwd=2)
+
+abline(v = as.Date("2020-03-17"), lwd=4, col="gray50")
+abline(v = BD2$data[BD2$data=="2020-03-24"], lwd=4, col="gray50")
+abline(v = BD2$data[BD2$data=="2020-05-07"],lwd=4, col="gray50")
+abline(v = BD2$data[BD2$data=="2020-05-11"],lwd=4, col="gray50")
+mtext("decreto",1, at= as.Date("2020-03-17"), cex=0.8 )
+mtext("quaren",1, at= BD2$data[BD2$data=="2020-03-24"] , cex=0.8)
+mtext("másc",1, at= BD2$data[BD2$data=="2020-05-07"] -1, cex=0.8)
+mtext("rod_amp",1, at= BD2$data[BD2$data=="2020-05-11"]+1 , cex=0.8)
+points((BD2$obitosNovos~BD2$data),type="l", lty=2, lwd = 0.4)
+
+points(ma(BD2$obitosNovos)~BD2$data,type="l", lty=3, lwd=4, col="gray10")
+legend(BD2$data[3]-5,1800,c("Domingos e segundas","Outros dias da semana", "Média móvel de 7 dias"), pch=c(4,19,NA),  lwd = c(2), cex=1.5, lty=c(1,1,2))
+mtext("Elaboração: AGPatriota", 1, at= BD2$data[3], line=3)
 dev.off()
 
 
@@ -207,8 +280,8 @@ dev.off()
 ##################################
 
 BDD <- read.csv(url("https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv"), header=TRUE)
-BDD[,5] <- as.Date(BDD[,5], format="%Y-%m-%d")
-BDD = BDD[BDD[,2]=="Brazil",-c(1,2,4)]
+BDD$date <- as.Date(BDD$date, format="%Y-%m-%d")
+BDD = BDD[BDD[,2]=="Brazil",-c(1,2,4,5)]
 BDD = BDD[BDD[,1]!="",]
 BDD[,1] = factor(BDD[,1])
 

@@ -1,3 +1,4 @@
+#Brasil, Italia Estados Unidos, Alemanha e Suécia
 #Reading the data
 
 #Continents by https://www.kaggle.com/statchaitya/country-to-continent
@@ -21,7 +22,7 @@ require('magick')
 
 #Selecting the countries: Brazil  Germany Italy   Sweden  US 
 countries <- c(29,121, 138,206,226)
-
+Pop = c(209.5, 83.02,60.36,10.23,328.2)
 #If you ndo not want to select countries, uncomment below. However, the counting deaths will not be correct for some countries because of the Province.State column
 #countries = TRUE
 BD.cases  <- BD.cases.or[countries,]
@@ -65,8 +66,8 @@ BD.r0 <- data.frame(Continent =rep(BD.rec0[,1],dim(BD.rec0)[2]-5),Country =rep(B
 
 
 #Selecting Deaths > 0
-BD.d        <-  BD.d[BD.d[,2]>0,]
-BD.d0       <- BD.d0[BD.d0[,3]>0,]
+BD.d        <-  BD.d[BD.d[,2]>99,]
+BD.d0       <- BD.d0[BD.d0[,3]>99,]
 
 #Translating to Portugues
 names(BD.d) <- c("Países", "Mortos", "Dias")
@@ -85,6 +86,10 @@ for(j in levels(BD.d[,1])){
 	BD1 <- rbind(BD1, cbind(id=1:dim(aux)[1],aux))
 }
 
+
+Pop0 = c(rep(Pop[1],sum(BD1$Países=="Brasil")),rep(Pop[2],sum(BD1$Países=="Alemanha")),rep(Pop[3],sum(BD1$Países=="Itália")), rep(Pop[4],sum(BD1$Países=="Suécia")),rep(Pop[5],sum(BD1$Países=="Estados Unidos")))
+
+
 BD2 <- data.frame()
 for(j in levels(BD.d0[,1])[-1]){
 	aux	<- BD.d0[BD.d0[,1] == j,]
@@ -95,41 +100,58 @@ for(j in levels(BD.d0[,1])[-1]){
 names(BD2)<- c("id",names(BD.d0)[-2])
 
 
-
-
 #Plots for the selected countries with Portugues title, labels and legend
 
 a = ggplot(BD1, aes(x =id, y=Mortos, color = Países, group= Países)) +geom_path() + 
-	 geom_point(alpha=0.7)+geom_text(aes(label = Países, colour = Países), hjust=1.5, size = 3.5, fontface = "bold")+
+	 geom_point(alpha=0.7)+geom_text(aes(label = Países, colour = Países), hjust=1.5, size = 4.5, fontface = "bold")+
 	 	transition_reveal(along=id) +
-			labs(title=paste("Evolução do número de mortos desde o primeiro morto."), x = 'Dias desde o primeiro morto', y = 'Número de mortos')+
-				theme(legend.position = "none")+theme(legend.title = element_blank())+ theme(text =element_text(size=13))+
+			labs(title=paste("Óbitos segundo data de divulgação."), x = 'Dias desde o centésimo morto \n  Dados: https://data.humdata.org/', y = '')+
+				theme(legend.position = "none")+theme(legend.title = element_blank())+ theme(text =element_text(size=15))+
 					view_follow()
 
-a1 = ggplot(BD1, aes(x =id, y=log(Mortos), color = Países, group= Países)) +geom_path() + 
-	geom_point(alpha=0.7)+geom_text(aes(label = Países, colour = Países), hjust=1.5, size = 3.5, fontface = "bold")+
-		transition_reveal(along=id) +
-			labs(title=paste("Dados: https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases"), x = 'Dias desde o primeiro morto (Elaborado por: AGPatriota)', y = 'Log do número de mortos')+ 	
-				theme(text =element_text(size=13),plot.title = element_text(size = 11))+theme(legend.position = "none")+
+aa = ggplot(BD1, aes(x =id, y=Mortos/Pop0, color = Países, group= Países)) +geom_path() + 
+	 geom_point(alpha=0.7)+geom_text(aes(label = Países, colour = Países), hjust=1.5, size = 4.5, fontface = "bold")+
+	 	transition_reveal(along=id) +
+			labs(title=paste("Por milhão de habitantes "), x = 'Dias desde o centésimo morto \n (Elaborado por: AGPatriota)', y = '')+
+				theme(legend.position = "none")+theme(legend.title = element_blank())+ theme(text =element_text(size=15))+
 					view_follow()
 
-a.gif =  animate(a, width = 440, height = 340)
+#a1 = ggplot(BD1, aes(x =id, y=log(Mortos), color = Países, group= Países)) +geom_path() + 
+#	geom_point(alpha=0.7)+geom_text(aes(label = Países, colour = Países), hjust=1.5, size = 3.5, fontface = "bold")+
+#		transition_reveal(along=id) +
+#			labs(title=paste("(Log do número de óbitos)"), x = '(Elaborado por: AGPatriota)', y = 'Log do número de mortos')+ 	
+#				theme(text =element_text(size=10),plot.title = element_text(size = 11))+theme(legend.position = "none")+
+#					view_follow()
+
+#aa1 = ggplot(BD1, aes(x =id, y=log(Mortos/Pop0), color = Países, group= Países)) +geom_path() + 
+#	geom_point(alpha=0.7)+geom_text(aes(label = Países, colour = Países), hjust=1.5, size = 3.5, fontface = "bold")+
+#		transition_reveal(along=id) +
+#			labs(title=paste("(Log do número de mortos)"), x = '', y = '')+ 	
+#				theme(text =element_text(size=10),plot.title = element_text(size = 11))+theme(legend.position = "none")+
+#					view_follow()
+
+a.gif =  animate(a, width = 360, height = 440)
 a.gif = image_read(a.gif)
-a1.gif =  animate(a1, width = 440, height = 340)
-a1.gif = image_read(a1.gif)
+aa.gif =  animate(aa, width = 360, height = 440)
+aa.gif = image_read(aa.gif)
 
 gc()
 gc()
+
+
 #Appending two gifs
-new_gif <- image_append(c(a.gif[1],a1.gif[1]))
+new_gif <- image_append(c(a.gif[1], aa.gif[1]), stack = FALSE)
 for(k in 2:100){
-  combined <- image_append(c(a.gif[k], a1.gif[k]))
+  combined <- image_append(c(a.gif[k], aa.gif[k]), stack = FALSE)
   new_gif <- c(new_gif, combined)
 }
-gc()
-gc()
-
 image_write(new_gif , paste("Gifs/Evolucao-mortos.gif", sep=""))
+
+
+
+
+
+
 
 gc()
 gc()
